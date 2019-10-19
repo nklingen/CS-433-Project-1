@@ -18,6 +18,9 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma): # Linear regression u
   return (w, loss) # return last weight vector of the method and the corresponding loss value (cost function)
 
 def least_squares(y, tx):
+    w=np.linalg.solve(tx.T @ tx, tx.T @ y)
+    loss = ((y - tx @ w).T) @ (y - tx @ w) / (2 * y.size)
+    return w, loss
 
 def ridge_regression(y, tx, lambda_):
 
