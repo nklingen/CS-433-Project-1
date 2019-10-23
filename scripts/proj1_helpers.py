@@ -26,6 +26,7 @@ def load_csv_data(data_path, sub_sample=False):
 
 def predict_labels(weights, data):
     """Generates class predictions given weights, and a test data matrix"""
+    
     y_pred = np.dot(data, weights)
     y_pred[np.where(y_pred <= 0)] = -1
     y_pred[np.where(y_pred > 0)] = 1
@@ -71,3 +72,72 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
         end_index = min((batch_num + 1) * batch_size, data_size)
         if start_index != end_index:
             yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
+
+"Constructs the X-tilda array with the bias variable"
+def build_model_data(height, weight):
+    """Form (y,tX) to get regression data in matrix form."""
+    y = weight
+    x = height
+    num_samples = len(y)
+    tx = np.c_[np.ones(num_samples), x]
+    return y, tx
+
+           
+"Used to standardize height with with a mean 0 and std 1"
+def standardize(x):
+    """Standardize the original data set."""
+    mean_x = np.mean(x)
+    x = x - mean_x
+    std_x = np.std(x)
+    x = x / std_x
+    return x, mean_x, std_x
+
+def split_data(x, y, ratio, seed=1):
+    """
+    split the dataset based on the split ratio. If ratio is 0.8 
+    you will have 80% of your data set dedicated to training 
+    and the rest dedicated to testing
+    """
+    # set seed
+    np.random.seed(seed)
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # split the data based on the given ratio: TODO
+     # set seed to have reproducible/consistent results
+    
+    # create np array of random indices
+    num_row = len(y)
+    indices = np.random.permutation(len(y))
+    
+    # split the random indice array into training / test
+    index_split = int(np.floor(ratio * num_row))
+    index_tr = indices[: index_split]
+    index_te = indices[index_split:]
+    
+    # constructs array for training / test given the chosen incides.
+    x_tr = x[index_tr]
+    x_te = x[index_te]
+    y_tr = y[index_tr]
+    y_te = y[index_te]
+    return x_tr, x_te, y_tr, y_te
+
+def build_poly(x, degree):
+    """polynomial basis functions for input data x, for j=0 up to j=degree."""
+    # ***************************************************
+    # this function should return the matrix formed
+    # by applying the polynomial basis to the input data
+    polyome = np.ones((len(x), 1))
+    for i in range(1, degree+1):
+        polyome = np.c_[polyome, x**i]
+    return polyome
+
+def plot_fitted_curve(y, x, weights, degree, ax):
+    """plot the fitted curve."""
+    ax.scatter(x, y, color='b', s=12, facecolors='none', edgecolors='r')
+    xvals = np.arange(min(x) - 0.1, max(x) + 0.1, 0.1)
+    tx = build_poly(xvals, degree)
+    f = tx.dot(weights)
+    ax.plot(xvals, f)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_title("Polynomial degree " + str(degree))
