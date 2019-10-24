@@ -121,16 +121,6 @@ def split_data(x, y, ratio, seed=1):
     y_te = y[index_te]
     return x_tr, x_te, y_tr, y_te
 
-def build_poly(x, degree):
-    """polynomial basis functions for input data x, for j=0 up to j=degree."""
-    # ***************************************************
-    # this function should return the matrix formed
-    # by applying the polynomial basis to the input data
-    polyome = np.ones((len(x), 1))
-    for i in range(1, degree+1):
-        polyome = np.c_[polyome, x**i]
-    return polyome
-
 def plot_fitted_curve(y, x, weights, degree, ax):
     """plot the fitted curve."""
     ax.scatter(x, y, color='b', s=12, facecolors='none', edgecolors='r')
@@ -168,3 +158,65 @@ def replace_with_constant(tX, constant, nanValue = -999):
     isNA = (tX == nanValue)
     tX = isNA * constant + (1 - isNA)*tX
     return tX
+
+def sigmoid(t):
+    """apply sigmoid function on t."""
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # TODO
+    sigmoid = np.exp(t)/(1+np.exp(t))
+    return sigmoid
+    # ***************************************************
+    raise NotImplementedError
+    
+def calculate_loss(y, tx, w):
+    """compute the cost by negative log likelihood."""
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # TODO
+    loss = np.sum(np.log(1+np.exp(tx@w))) - np.sum(y*tx@w)
+    return loss
+    # ***************************************************
+    raise NotImplementedError
+    
+def calculate_gradient(y, tx, w):
+    """compute the gradient of loss."""
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # TODO
+    gradient = np.dot(tx.T, sigmoid(np.dot(tx,w))-y)
+    return gradient
+    # ***************************************************
+    raise NotImplementedError
+
+def calculate_hessian(y, tx, w):
+    """return the hessian of the loss function."""
+    # ***************************************************
+    # INSERT YOUR CODE HERE
+    # calculate hessian: TODO
+    S = sigmoid(tx@w) @ (1-sigmoid(tx@w)).T
+    Hessian = tx.T @ S @ tx
+    return Hessian
+
+def penalized_logistic_regression(y, tx, w, lambda_):
+    """return the loss, gradient, and hessian."""
+    # return loss, gradient, and hessian: TODO
+    loss = calculate_loss(y, tx, w) + (lambda_/2) * np.linalg.norm(w, ord=2) ** 2
+    gradient = calculate_gradient(y, tx, w) + lambda_ * w 
+    hessian = calculate_hessian(y, tx, w) + 2 * np.diag(np.ones(len(w)))
+    return loss, gradient, hessian
+
+    
+def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
+    """
+    Do one step of gradient descent, using the penalized logistic regression.
+    Return the loss and updated w.
+    """
+    # ***************************************************
+    # return loss, gradient
+    loss, gradient, hessian = penalized_logistic_regression(y, tx, w, lambda_)
+    # ***************************************************
+    # update w
+    w = w - gamma * gradient
+    
+    return loss, w
