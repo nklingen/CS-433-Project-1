@@ -159,6 +159,19 @@ def replace_with_constant(tX, constant, nanValue = -999):
     tX = isNA * constant + (1 - isNA)*tX
     return tX
 
+def build_poly(x, degree):
+    poly = x
+    for deg in range(2, degree+1):
+        poly = np.concatenate((poly, np.power(x, deg)), axis = 1)
+    return poly
+
+
+def compute_loss(y, tx, w):
+    
+    MSE = 1/(2*y.shape[0])*np.sum(np.square(y-np.dot(tx,w)))
+    
+    return MSE
+
 def sigmoid(t):
     """apply sigmoid function on t."""
     # ***************************************************
