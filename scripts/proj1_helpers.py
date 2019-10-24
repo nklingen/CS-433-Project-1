@@ -26,7 +26,7 @@ def load_csv_data(data_path, sub_sample=False):
 
 def predict_labels(weights, data):
     """Generates class predictions given weights, and a test data matrix"""
-    
+
     y_pred = np.dot(data, weights)
     y_pred[np.where(y_pred <= 0)] = -1
     y_pred[np.where(y_pred > 0)] = 1
@@ -82,7 +82,7 @@ def build_model_data(height, weight):
     tx = np.c_[np.ones(num_samples), x]
     return y, tx
 
-           
+
 "Used to standardize height with with a mean 0 and std 1"
 def standardize(x):
     """Standardize the original data set."""
@@ -94,8 +94,8 @@ def standardize(x):
 
 def split_data(x, y, ratio, seed=1):
     """
-    split the dataset based on the split ratio. If ratio is 0.8 
-    you will have 80% of your data set dedicated to training 
+    split the dataset based on the split ratio. If ratio is 0.8
+    you will have 80% of your data set dedicated to training
     and the rest dedicated to testing
     """
     # set seed
@@ -104,16 +104,16 @@ def split_data(x, y, ratio, seed=1):
     # INSERT YOUR CODE HERE
     # split the data based on the given ratio: TODO
      # set seed to have reproducible/consistent results
-    
+
     # create np array of random indices
     num_row = len(y)
     indices = np.random.permutation(len(y))
-    
+
     # split the random indice array into training / test
     index_split = int(np.floor(ratio * num_row))
     index_tr = indices[: index_split]
     index_te = indices[index_split:]
-    
+
     # constructs array for training / test given the chosen incides.
     x_tr = x[index_tr]
     x_te = x[index_te]
@@ -141,3 +141,30 @@ def plot_fitted_curve(y, x, weights, degree, ax):
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.set_title("Polynomial degree " + str(degree))
+
+
+def replace_nan_with_mean(tX, nanValue = -999):
+    ''' This function replaces all the nanValues in the columns with the column'''
+    ''' mean (this mean is calculated by considering all the other lines that  '''
+    ''' do not contain nanValue)'''
+
+    isNA = (tX == nanValue)
+    # Compute for each column the sum of the elements != nan
+    columnSums = np.sum(tX * (1 - isNA), axis = 0, keepdims = True)
+
+    # Compute for each column the number of values != nan
+    nr_column = np.sum(1 - isNA, axis = 0, keepdims = True)
+
+    #Compute the mean for each column, for column i, the mean is at mean_cols[i]
+    mean_cols = columnSums / nr_column
+
+    # Replace all the nanValues with the corresponding mean of the column
+    tX = isNA * mean_cols + (1 - isNA) * tX
+    return tX
+
+
+def replace_with_constant(tX, constant, nanValue = -999):
+    ''' This function replaces all the nanValues in the column i with the constant[i]'''
+    isNA = (tX == nanValue)
+    tX = isNA * constant + (1 - isNA)*tX
+    return tX
