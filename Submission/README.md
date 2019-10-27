@@ -12,8 +12,9 @@ In the same folder:
 
 ##### The `run.py` script:
 - Loads the training data
-- Splits training data 
-- Runs the ridge regression
+- Splits training data with ratio 0.8
+- Runs ridge regression to compute the combination of degree / lambda with the lowest validation MSE
 - Predicts labels for the test data
 - Saves this predictions in the `out.csv` submission file
 
+Please note that the degree and lambda values fluctuate very slightly between runs (hence there may be a small descepancy between the recorded parameter values in the report and those calculated by run.py) though the output consistently has an accuracy of 78.9%
