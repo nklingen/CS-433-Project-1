@@ -10,4 +10,10 @@ In the same folder:
 `unzip filename.zip`    
 `python3 run.py`   
 
+##### The `run.py` script:
+- Loads the training data
+- Splits training data 
+- Runs the ridge regression
+- Predicts labels for the test data
+- Saves this predictions in the `out.csv` submission file
 
