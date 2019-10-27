@@ -6,8 +6,8 @@ Sena Necla Cetin
 
 ### How to create a submission (out.csv file) using our best method
 In the same folder:    
-`unzip filename.zip`    
-`unzip filename.zip`    
+`unzip test.csv.zip`    
+`unzip train.csv.zip`    
 `python3 run.py`   
 
 ##### The `run.py` script:
