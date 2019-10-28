@@ -12,6 +12,7 @@ def compute_gradient(y, tx, w):
 
     return gradient
 
+
 def compute_loss(y, tx, w):
 
     N = y.shape[0]
@@ -19,13 +20,14 @@ def compute_loss(y, tx, w):
 
     return MSE
 
+
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
     ws = [initial_w]
     losses = []
     w = initial_w
 
-    for n_iter in range(max_iters):
+    for n_iter in range(max_iters+1):
         # compute gradient and loss
         gradient = compute_gradient(y, tx, w)
         loss = compute_loss(y, tx, w)
@@ -42,6 +44,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
     return ws[-1], losses[-1]
 
+
 ################################################################################
 '''---------------------- Least squares SGD ---------------------------------'''
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
@@ -50,7 +53,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
     losses = []
     w = initial_w
 
-    for n_iter in range(max_iters):
+    for n_iter in range(max_iters+1):
         for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
 
             # compute gradient and loss
@@ -64,17 +67,15 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
             ws.append(w)
             losses.append(loss)
 
-        # if n_iter % 50 == 0:
-        #     print("\t Step SGD " + str(n_iter) + "/" + str(max_iters) + " loss = " + str(losses[-1]))
+        if n_iter % 50 == 0:
+           print("\t Step SGD " + str(n_iter) + "/" + str(max_iters) + " loss = " + str(losses[-1]))
 
-    return ws[len(ws)-1], losses[len(losses)-1]
-
+    return ws[-1], losses[-1]
 
 
 
 ################################################################################
 '''--------------------------- Least squares --------------------------------'''
-
 def least_squares(y, tx):
 
     a = tx.T @ tx
@@ -84,10 +85,8 @@ def least_squares(y, tx):
 
 
 
-
 ################################################################################
 '''------------------------- Ridge regression -------------------------------'''
-
 def ridge_regression(y, tx, lambda_):
 
     a = (1/len(y))*(tx.T @ tx) + 2 * (lambda_ * np.identity(tx.shape[1]))
@@ -130,7 +129,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, batch_size=1):
     y = y.reshape(-1,1)
     loss = 0.0
 
-    for n_iter in range(max_iters):
+    for n_iter in range(max_iters+1):
         # get loss and update w.
         for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
             w = grad_log_reg_iter(minibatch_y, minibatch_tx, w, gamma)
@@ -162,14 +161,14 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, batch_s
     regLossParam = 0.5
     losses = []
 
-    for n_iter in range(max_iters):
+    for n_iter in range(max_iters+1):
         for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
             _, w = grad_reg_log_reg_iter(minibatch_y, minibatch_tx, lambda_, w, gamma)
         loss_neg_likehood = compute_loss_neg_log_likehood(y, tx, w)
         regLoss = regLossParam * lambda_ * np.sum(w * w)
         loss = loss_neg_likehood + regLoss
 
-        # if n_iter % 100 == 0:
-        print("\t Reg Logistic Regression ", str(n_iter), "/", str(max_iters), "Loss = ", loss)
+        if n_iter % 100 == 0:
+            print("\t Reg Logistic Regression ", str(n_iter), "/", str(max_iters), "Loss = ", loss)
 
     return w, loss

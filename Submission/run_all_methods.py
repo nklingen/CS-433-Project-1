@@ -32,7 +32,7 @@ def run_least_squares_GD(x_train, y_train, x_validation, y_validation):
 
 def run_least_squares_SGD(x_train, y_train, x_validation, y_validation):
     print("\nRunning least squares SGD...")
-    gamma = 0.00001
+    gamma = 1e-8
     max_iters = 200
     initial_w = np.zeros(len(x_train[0]))
 
@@ -71,7 +71,7 @@ def run_log_regression(x_train, y_train, x_validation, y_validation):
     print("\nRunning logistic regression...")
 
     initial_w = np.zeros(len(x_train[0]))
-    max_iters = 5000
+    max_iters = 1000
     gamma = 1e-4
 
     y_train = y_train > 0
@@ -87,7 +87,7 @@ def run_log_regression(x_train, y_train, x_validation, y_validation):
 def run_reg_log_regression(x_train, y_train, x_validation, y_validation):
     print("\nRunning reg logistic regression...")
 
-    max_iters = 5000
+    max_iters = 1000
     gamma = 5e-5
     initial_w = np.zeros(len(x_train[0]))
     lambda_ = 1
@@ -114,13 +114,12 @@ def main():
 
     x_train, x_validation, y_train, y_validation = split_data(tX, y, ratio, seed)
 
-    # run_least_squares_GD(x_train, y_train, x_validation, y_validation)
-    # run_least_squares_SGD(x_train, y_train, x_validation, y_validation)
-    # run_least_squares(x_train, y_train, x_validation, y_validation)
-    # run_ridge_regression(x_train, y_train, x_validation, y_validation)
-    # run_log_regression(x_train, y_train, x_validation, y_validation)
+    run_least_squares_GD(x_train, y_train, x_validation, y_validation)
+    run_least_squares_SGD(x_train, y_train, x_validation, y_validation)
+    run_least_squares(x_train, y_train, x_validation, y_validation)
+    run_ridge_regression(x_train, y_train, x_validation, y_validation)
+    run_log_regression(x_train, y_train, x_validation, y_validation)
     run_reg_log_regression(x_train, y_train, x_validation, y_validation)
-
 
 
 if __name__ == "__main__":
